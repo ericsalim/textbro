@@ -2,10 +2,9 @@ package main
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/ericsalim/textbro/internal/config"
-	"github.com/gin-gonic/gin"
+	"github.com/ericsalim/textbro/internal/router"
 )
 
 func main() {
@@ -15,21 +14,12 @@ func main() {
 		log.Fatalf("failed to load config: %v", err)
 	}
 
-	router := gin.Default()
-
-	api := router.Group("/api")
-	{
-		api.GET("/ping", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{
-				"status": "OK",
-			})
-		})
-	}
+	r := router.SetupRouter()
 
 	if cfg.ServerPort != "" {
-		router.Run(":" + cfg.ServerPort)
+		r.Run(":" + cfg.ServerPort)
 	} else {
-		router.Run()
+		r.Run()
 	}
 
 }
